@@ -24,7 +24,7 @@ export default function RootLayout({
 
     socket.on("connect", () => {
       console.log("Socket connected:", socket.id);
-      socket.emit("setup", userId); // ✅ GUARANTEED
+      socket.emit("setup", userId); 
     });
 
     return () => {
