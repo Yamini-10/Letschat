@@ -26,11 +26,11 @@ export const io = new Server(server, {
 const onlineUsers = new Map<string, Set<string>>();
 
 io.on("connection", (socket: Socket) => {
-  console.log("🔌 Socket connected:", socket.id);
+  console.log("Socket connected:", socket.id);
 
   /* ================= SETUP ================= */
   socket.on("setup", async (userId: string) => {
-    console.log("🟢 SETUP:", userId);
+    console.log("SETUP:", userId);
 
     let sockets = onlineUsers.get(userId);
     if (!sockets) {
@@ -41,14 +41,14 @@ io.on("connection", (socket: Socket) => {
     sockets.add(socket.id);
     socket.join(userId);
 
-    /* 🔥 SEND EXISTING ONLINE USERS TO THIS USER */
+    /* SEND EXISTING ONLINE USERS TO THIS USER */
     for (const uid of onlineUsers.keys()) {
       if (uid !== userId) {
         socket.emit("user-online", uid);
       }
     }
 
-    /* 🔥 MARK ONLINE ONLY ON FIRST SOCKET */
+    /* MARK ONLINE ONLY ON FIRST SOCKET */
     if (sockets.size === 1) {
       await User.findByIdAndUpdate(userId, {
         isOnline: true,
@@ -120,7 +120,7 @@ io.on("connection", (socket: Socket) => {
 
   /* ================= LOGOUT ================= */
   socket.on("logout", async (userId: string) => {
-    console.log("🔴 LOGOUT:", userId);
+    console.log("LOGOUT:", userId);
 
     const sockets = onlineUsers.get(userId);
     if (!sockets) return;
@@ -143,7 +143,7 @@ io.on("connection", (socket: Socket) => {
 
   /* ================= DISCONNECT ================= */
   socket.on("disconnect", async () => {
-    console.log("❌ DISCONNECT:", socket.id);
+    console.log("DISCONNECT:", socket.id);
 
     for (const [userId, sockets] of onlineUsers.entries()) {
       if (sockets.has(socket.id)) {
@@ -168,5 +168,5 @@ io.on("connection", (socket: Socket) => {
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 server.listen(5000, () =>
-  console.log("🚀 Server running on port 5000")
+  console.log("Server running on port 5000")
 );
